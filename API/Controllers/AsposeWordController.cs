@@ -18,7 +18,7 @@ namespace API.Controllers
         [HttpGet("ConvertToPDF")]
         public async Task<IActionResult> ConvertToPDF()
         {
-            var result = _evi.ChuyenDoiSangPDF();
+            var result = _evi.ChenVaThaoTacBieuDo();
             return Ok();
         }
     }

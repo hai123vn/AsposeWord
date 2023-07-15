@@ -8,6 +8,9 @@ namespace API._Interface
         Task ThemHinhAnh();
         Task TrichXuatHinhAnh();
 
+        Task ChenVaThaoTacBieuDo();
 
+        Task BaoMat();
+        Task BaoMatVoiCHUKISO();
     }
 }

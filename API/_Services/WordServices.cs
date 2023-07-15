@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using API._Interface;
 using Aspose.Words;
+using Aspose.Words.DigitalSignatures;
 using Aspose.Words.Drawing;
+using Aspose.Words.Drawing.Charts;
 using Aspose.Words.Replacing;
 using Aspose.Words.Saving;
 
@@ -137,6 +139,193 @@ namespace API._Services
                 }
             }
             throw new NotImplementedException();
+        }
+
+        public async Task ChenVaThaoTacBieuDo()
+        {
+            Document doc = new Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
+
+            #region Column Chart
+            Shape shapeColumn = builder.InsertChart(ChartType.Column, 432, 252);
+            builder.InsertBreak(BreakType.SectionBreakContinuous);
+            Chart chartColumn = shapeColumn.Chart;
+
+            chartColumn.Title.Text = "Demo ví dụ Column chart";
+
+            ChartSeriesCollection seriesColl = chartColumn.Series;
+            // Check series count.
+            Console.WriteLine(seriesColl.Count);
+
+            // Delete default generated series.
+            seriesColl.Clear();
+
+            // Create category names array, in this example we have two categories.
+            string[] categories = new string[] { "AW Category 1", "AW Category 2" };
+            // Adding new series. Please note, data arrays must not be empty and arrays must be the same size.
+            seriesColl.Add("AW Series 1", categories, new double[] { 1, 2 });
+            seriesColl.Add("AW Series 2", categories, new double[] { 3, 4 });
+            seriesColl.Add("AW Series 3", categories, new double[] { 5, 6 });
+            seriesColl.Add("AW Series 4", categories, new double[] { 7, 8 });
+            seriesColl.Add("AW Series 5", categories, new double[] { 9, 10 });
+
+            #endregion
+
+            #region Scatter chart.
+            Shape shapeScatter = builder.InsertChart(ChartType.Scatter, 432, 252);
+            builder.InsertBreak(BreakType.SectionBreakContinuous);
+            Chart chartScatter = shapeScatter.Chart;
+
+            chartColumn.Title.Text = "Demo ví dụ Scatter chart";
+            // Use this overload to add series to any type of Scatter charts.
+            chartColumn.Series.Add("AW Series 1", new double[] { 0.7, 1.8, 2.6 }, new double[] { 2.7, 3.2, 0.8 });
+            #endregion
+
+
+            #region Bubble Chart
+            Shape shapeBubble = builder.InsertChart(ChartType.Bubble, 432, 252);
+            builder.InsertBreak(BreakType.SectionBreakContinuous);
+            Chart chartBubble = shapeBubble.Chart;
+
+            // Use this overload to add series to any type of Bubble charts.
+            chartBubble.Series.Add("AW Series 1", new double[] { 0.7, 1.8, 2.6 }, new double[] { 2.7, 3.2, 0.8 }, new double[] { 10, 4, 8 });
+            #endregion
+
+
+            #region Line Chart
+            Shape shapeLine = builder.InsertChart(ChartType.Line, 432, 252);
+            Chart chartLine = shapeLine.Chart;
+            chartLine.Series.Clear();
+
+            ChartSeries series = chartLine.Series.Add("Series 1",
+    new string[] { "Category1", "Category2", "Category3" },
+    new double[] { 2.7, 3.2, 0.8 });
+
+            ChartSeriesCollection seriesCollLine = chartLine.Series;
+            // Check series count.
+            Console.WriteLine(seriesColl.Count);
+
+            chartLine.Title.Show = true;
+
+            // Setting chart Title.
+            chartLine.Title.Text = "Demo ví dụ Line chart";
+
+            // Determines whether other chart elements shall be allowed to overlap title.
+            chartLine.Title.Overlay = false;
+
+            chartLine.Legend.Position = LegendPosition.Left;
+            chartLine.Legend.Overlay = true;
+
+
+
+            // ChartSeriesCollection seriesColl = chart.Series;
+
+            ChartSeries series0 = shapeLine.Chart.Series[0];
+
+            // Get second series.
+            ChartSeries series1 = shapeLine.Chart.Series[1];
+
+            // Change first series name.
+            series0.Name = "Trí";
+
+            // Change second series name.
+            series1.Name = "Hải";
+
+            // You can also specify whether the line connecting the points on the chart shall be smoothed using Catmull-Rom splines.
+            series0.Smooth = true;
+            series1.Smooth = true;
+            #endregion
+
+
+
+
+
+
+            doc.Save(folder + @"DemoShapeChart.doc");
+        }
+
+        public async Task BaoMat()
+        {
+            var path = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/helloword.doc");
+            string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
+            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            Document document = new Document(path);
+            //    CHỉ đọc
+
+            // Enter a password that's up to 15 characters long.
+            document.WriteProtection.SetPassword("MyPassword");
+            document.WriteProtection.ReadOnlyRecommended = true;
+            document.Protect(ProtectionType.ReadOnly);
+
+            // Set Mật khẩu
+            // Create a document.
+            Document doc = new Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
+            builder.Write("Hello world!");
+
+            // DocSaveOptions only applies to Doc and Dot save formats.
+            DocSaveOptions options = new DocSaveOptions(SaveFormat.Doc);
+
+            // Set a password with which the document will be encrypted, and which will be required to open it.
+            options.Password = "MyPassword";
+
+
+            //Hạn chế chỉnh sửa
+            // doc.Protect(ProtectionType.NoProtection, "password");
+
+            //Chữ kí số
+
+            document.Save(folder + "Security.docx", SaveFormat.Docx);
+        }
+
+        public async Task BaoMatVoiCHUKISO()
+        {
+            // Create a Document.
+            Document doc = new Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
+
+            // Set signature line options.
+            SignatureLineOptions signatureLineOptions = new SignatureLineOptions
+            {
+                Signer = "Entername",
+                SignerTitle = "QA",
+                Email = "EnterSomeEmail",
+            
+                ShowDate = true,
+                DefaultInstructions = false,
+                Instructions = "You need more info about signature line",
+                AllowComments = true
+            };
+
+            // Insert signature line.
+            SignatureLine signatureLine = builder.InsertSignatureLine(signatureLineOptions).SignatureLine;
+            signatureLine.ProviderId = Guid.Parse("CF5A7BB4-8F3C-4756-9DF6-BEF7F13259A2");
+
+            doc.Save(folder + "DocumentBuilder.SignatureLineProviderId.docx");
+
+            // Set signing options. 
+            SignOptions signOptions = new SignOptions
+            {
+                SignatureLineId = signatureLine.Id,
+                ProviderId = signatureLine.ProviderId,
+                Comments = "Document was signed by vderyushev",
+                SignTime = DateTime.Now
+            };
+
+            // Create a certificate.
+            CertificateHolder certHolder = CertificateHolder.Create(folder + "morzal.pfx", "aw");
+
+            // We can sign the signature line programmatically.
+            DigitalSignatureUtil.Sign(folder + "DocumentBuilder.SignatureLineProviderId.docx", folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
+
+            // Create the shape of the signature line.
+            doc = new Document(folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+            Shape shape = (Shape)doc.GetChild(NodeType.Shape, 0, true);
+            signatureLine = shape.SignatureLine;
+
+            // Loading signatures.
+            DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+
         }
     }
 }
