@@ -35,7 +35,7 @@ namespace API._Services
             Document document = new Document(path);
 
 
-            // document.Save(folder + "document.pdf", SaveFormat.Pdf);
+            document.Save(folder + "document.pdf", SaveFormat.Pdf);
             document.Save(folder + "document.html", SaveFormat.Html);
             document.Save(folder + "document.md", SaveFormat.Markdown);
             document.Save(folder + "document_image.jpg", SaveFormat.Jpeg);
@@ -290,7 +290,7 @@ namespace API._Services
                 Signer = "Entername",
                 SignerTitle = "QA",
                 Email = "EnterSomeEmail",
-            
+
                 ShowDate = true,
                 DefaultInstructions = false,
                 Instructions = "You need more info about signature line",
