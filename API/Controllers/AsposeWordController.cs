@@ -15,11 +15,13 @@ namespace API.Controllers
             _evi = evi;
         }
 
-        [HttpGet("ConvertToPDF")]
-        public async Task<IActionResult> ConvertToPDF()
+        [HttpPost("ConvertToPDF")]
+        public async Task<IActionResult> ConvertToPDF(IFormFile type)
         {
-            var result = _evi.ChuyenDoiSangPDF();
-            return Ok();
+            var pdfData = await _evi.ChuyenDoiSangPDF(type);
+
+            // Nếu không có dữ liệu PDF hoặc có lỗi, bạn có thể trả về một thông báo lỗi hoặc mã lỗi thích hợp.
+            return Ok(); // Ví dụ: Trả về mã lỗi 404 Not Found
         }
 
         [HttpGet("TimKiemVaThayThe")]

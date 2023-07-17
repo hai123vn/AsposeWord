@@ -27,18 +27,33 @@ namespace API._Services
         /// Đọc 1 file có sẵn và chuyển đổi thành file PDF
         /// </summary>
         /// <returns></returns>
-        public async Task ChuyenDoiSangPDF()
+
+        public async Task<byte[]> ChuyenDoiSangPDF(IFormFile file)
         {
-            var path = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/helloword.doc");
+            // Lưu tệp từ IFormFile vào thư mục tạm thời với tên tệp ngẫu nhiên
+            // var fileName = Path.Combine(_environment.ContentRootPath, file.FileName);
+            var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/" + file.FileName);
             string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
-            // tạo 1 file document với 1 file có đường dẫn có sẵn
-            Document document = new Document(path);
 
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
 
-            document.Save(folder + "document.pdf", SaveFormat.Pdf);
+            // Tiếp tục xử lý tương tự như bạn đã làm trước đây
+            var document = new Document(filePath);
+            MemoryStream stream = new MemoryStream();
+            // document.Save(stream, SaveFormat.Pdf);
+            // document.Save(stream, SaveFormat.Html);
+            document.Save(folder + file.Name + ".pdf", SaveFormat.Pdf);
             document.Save(folder + "document.html", SaveFormat.Html);
             document.Save(folder + "document.md", SaveFormat.Markdown);
             document.Save(folder + "document_image.jpg", SaveFormat.Jpeg);
+
+            // Xóa tệp tạm thời sau khi đã sử dụng xong
+            File.Delete(filePath);
+
+            return stream.ToArray();
         }
 
         public async Task TimKiemVaThayThe()
