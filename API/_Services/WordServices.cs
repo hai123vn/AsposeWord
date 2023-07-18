@@ -28,10 +28,10 @@ namespace API._Services
         /// </summary>
         /// <returns></returns>
 
-        public async Task<byte[]> ChuyenDoiSangPDF(IFormFile file)
+        public async Task<List<string>> ChuyenDoiSangPDF(IFormFile file)
         {
-            // Lưu tệp từ IFormFile vào thư mục tạm thời với tên tệp ngẫu nhiên
-            // var fileName = Path.Combine(_environment.ContentRootPath, file.FileName);
+            List<string> fileName = new List<string> { };
+            // Lưu tệp từ IFormFile vào thư mục tạm thời với tên tệp gốc
             var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/" + file.FileName);
             string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
 
@@ -41,19 +41,33 @@ namespace API._Services
             }
 
             // Tiếp tục xử lý tương tự như bạn đã làm trước đây
-            var document = new Document(filePath);
-            MemoryStream stream = new MemoryStream();
-            // document.Save(stream, SaveFormat.Pdf);
-            // document.Save(stream, SaveFormat.Html);
-            document.Save(folder + file.Name + ".pdf", SaveFormat.Pdf);
-            document.Save(folder + "document.html", SaveFormat.Html);
-            document.Save(folder + "document.md", SaveFormat.Markdown);
-            document.Save(folder + "document_image.jpg", SaveFormat.Jpeg);
+            try
+            {
+                var dataDir = Path.Combine(folder, file.FileName);
+                if (System.IO.File.Exists(dataDir))
+                {
+                    System.IO.File.Delete(dataDir); // Xóa file đã tải lên
+                }
+                var document = new Document(dataDir);
+                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".pdf", SaveFormat.Pdf);
+                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".html", SaveFormat.Html);
+                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".md", SaveFormat.Markdown);
+                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".jpg", SaveFormat.Jpeg);
+            }
+            catch (Exception ex)
+            {
+                // Nếu có lỗi trong quá trình xử lý, ghi nhật ký (logs) để xem chi tiết lỗi
+                // Hoặc thêm mã xử lý lỗi khác (ví dụ: thông báo lỗi) nếu cần
+                Console.WriteLine("Lỗi trong quá trình xử lý chuyển đổi và lưu tệp: " + ex.Message);
+            }
 
-            // Xóa tệp tạm thời sau khi đã sử dụng xong
-            File.Delete(filePath);
+            // Thêm các tên tệp đã chuyển đổi vào danh sách fileNameList
+            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".pdf");
+            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".html");
+            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".md");
+            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".jpg");
 
-            return stream.ToArray();
+            return fileName;
         }
 
         public async Task TimKiemVaThayThe()

@@ -9,19 +9,29 @@ namespace API.Controllers
     public class AsposeWordController : ControllerBase
     {
         private readonly IWordServices _evi;
-
-        public AsposeWordController(IWordServices evi)
+        private readonly IWebHostEnvironment _environment;
+        private readonly string fileFolder;
+        public AsposeWordController(IWordServices evi, IWebHostEnvironment environment)
         {
             _evi = evi;
+            _environment = environment;
+            fileFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
         }
 
         [HttpPost("ConvertToPDF")]
-        public async Task<IActionResult> ConvertToPDF(IFormFile type)
+        public async Task<IActionResult> ConvertToPDF(IFormFile file)
         {
-            var pdfData = await _evi.ChuyenDoiSangPDF(type);
+            var pdfData = await _evi.ChuyenDoiSangPDF(file);
+            return Ok(pdfData);
+        }
 
-            // Nếu không có dữ liệu PDF hoặc có lỗi, bạn có thể trả về một thông báo lỗi hoặc mã lỗi thích hợp.
-            return Ok(); // Ví dụ: Trả về mã lỗi 404 Not Found
+        [HttpPost("DownloadFile")]
+        public async Task<IActionResult> DownloadConvertToPDF(string fileName)
+        {
+            string filePath = Path.Combine(fileFolder, fileName);
+            string mimeType = "application/octet.stream";
+            byte[] filePaths = System.IO.File.ReadAllBytes(filePath);
+            return File(filePaths, mimeType, fileName);
         }
 
         [HttpGet("TimKiemVaThayThe")]

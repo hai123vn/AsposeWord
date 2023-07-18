@@ -2,7 +2,7 @@ namespace API._Interface
 {
     public interface IWordServices
     {
-        Task<byte[]> ChuyenDoiSangPDF(IFormFile file);
+        Task<List<string>> ChuyenDoiSangPDF(IFormFile file);
         Task TimKiemVaThayThe();
         Task ChenVanBan();
         Task ThemHinhAnh();
