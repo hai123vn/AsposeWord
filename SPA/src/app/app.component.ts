@@ -18,7 +18,7 @@ import { Asposeword } from './_core/model/asposeword';
 })
 export class AppComponent {
 
-  title = 'SPA';
+  title = 'Aspose Word';
   list: string[] = [];
   fileWord: File;
 
@@ -45,5 +45,6 @@ export class AppComponent {
   download() {
 
   }
+
 }
 
