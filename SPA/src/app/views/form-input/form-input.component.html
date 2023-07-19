@@ -1,0 +1,14 @@
+<div class="box-upload">
+    <label class="text-muted text-upload">
+        Upload File
+    </label>
+    <span class="control-fileupload">
+        <label for="file"> {{filename}}</label>
+        <input type="file" id="file" (change)="onSelectFile($event)">
+    </span>
+
+    <button type="button" class="btn btn-sm btn-primary mt-1" (click)="uploadFile()" [disabled]="media.file == null">
+        <i class="fas fa-upload"></i>
+        Upload 
+    </button>
+</div>

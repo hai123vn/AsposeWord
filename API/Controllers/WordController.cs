@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost("ConvertToPDF")]
-        public async Task<IActionResult> ConvertToPDF([FromForm] IFormFile file)
+        public async Task<IActionResult> ConvertToPDF(IFormFile file)
         {
             var pdfData = await _evi.ChuyenDoiSangPDF(file);
             return Ok(pdfData);
