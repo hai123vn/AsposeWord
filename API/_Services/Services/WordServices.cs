@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API._Services.Interfaces;
+using API.Dtos;
+using API.Helpers.Utilities;
 using Aspose.Words;
 using Aspose.Words.DigitalSignatures;
 using Aspose.Words.Drawing;
@@ -15,12 +17,17 @@ namespace API._Services.Services
     public class WordServices : IWordServices
     {
         private readonly IWebHostEnvironment _environment;
-        private readonly string folder;
+        private readonly string inputFolder;
+        private readonly string outputFolder;
 
-        public WordServices(IWebHostEnvironment environment)
+        private readonly IUploadFileUtility _functionUtility;
+
+        public WordServices(IWebHostEnvironment environment, IUploadFileUtility functionUtility)
         {
             _environment = environment;
-            folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
+            _functionUtility = functionUtility;
+            inputFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot/input/");
+            outputFolder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
         }
 
         /// <summary>
@@ -28,44 +35,46 @@ namespace API._Services.Services
         /// </summary>
         /// <returns></returns>
 
-        public async Task<List<string>> ChuyenDoiSangPDF(IFormFile file)
+        public async Task<List<FileOutput>> ChuyenDoiSangPDF(IFormFile file, string fileType)
         {
-            List<string> fileName = new List<string> { };
-            // Lưu tệp từ IFormFile vào thư mục tạm thời với tên tệp gốc
-            var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/" + file.FileName);
-            string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
+            // Tạo biến trả về
+            var fileName = new List<FileOutput>();
 
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(fileStream);
-            }
+            // Lấy filePath đầu vào
+            var filePath = Path.Combine(inputFolder + file.FileName);
+            // upload vào Input để lấy mẫu
+            var newFileName = await _functionUtility.UploadAsync(file, "input", Path.GetFileNameWithoutExtension(file.FileName));
 
-            // Tiếp tục xử lý tương tự như bạn đã làm trước đây
-            try
-            {
-                var dataDir = Path.Combine(folder, file.FileName);
-                if (System.IO.File.Exists(dataDir))
-                {
-                    System.IO.File.Delete(dataDir); // Xóa file đã tải lên
-                }
-                var document = new Document(dataDir);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".pdf", SaveFormat.Pdf);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".html", SaveFormat.Html);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".md", SaveFormat.Markdown);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".jpg", SaveFormat.Jpeg);
-            }
-            catch (Exception ex)
-            {
-                // Nếu có lỗi trong quá trình xử lý, ghi nhật ký (logs) để xem chi tiết lỗi
-                // Hoặc thêm mã xử lý lỗi khác (ví dụ: thông báo lỗi) nếu cần
-                Console.WriteLine("Lỗi trong quá trình xử lý chuyển đổi và lưu tệp: " + ex.Message);
-            }
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+
+            // Đọc file bằng Document
+            var document = new Document(dataDir);
 
             // Thêm các tên tệp đã chuyển đổi vào danh sách fileNameList
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".pdf");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".html");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".md");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".jpg");
+            string exportFileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}.{fileType.ToLower()}";
+            string exportPath = $"{outputFolder}/{Path.GetFileNameWithoutExtension(file.FileName)}.{fileType.ToLower()}";
+
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(exportPath))
+                File.Delete(exportPath);
+
+            // Lưu file theo định dạng
+            if (fileType == "PDF")
+                document.Save(exportPath, SaveFormat.Pdf);
+            if (fileType == "HTML")
+                document.Save(exportPath, SaveFormat.Html);
+            if (fileType == "MD")
+                document.Save(exportPath, SaveFormat.Markdown);
+            if (fileType == "JPEG")
+                document.Save(exportPath, SaveFormat.Jpeg);
+
+
+            fileName.Add(new FileOutput()
+            {
+                FileName = exportFileName,
+                Url = exportPath
+            });
 
             return fileName;
         }
@@ -96,7 +105,7 @@ namespace API._Services.Services
             // 
             saveOptions.CompressionLevel = CompressionLevel.Maximum;
 
-            document.Save(folder + "BaseConversions.CompressXlsx.xlsx", saveOptions);
+            document.Save(outputFolder + "BaseConversions.CompressXlsx.xlsx", saveOptions);
         }
 
 
@@ -125,7 +134,7 @@ namespace API._Services.Services
                 }
             }
 
-            newDoc.Save(folder + "ChenVanBan.docx", SaveFormat.Docx);
+            newDoc.Save(outputFolder + "ChenVanBan.docx", SaveFormat.Docx);
         }
 
         public async Task ThemHinhAnh()
@@ -136,7 +145,7 @@ namespace API._Services.Services
             DocumentBuilder builder = new DocumentBuilder(doc);
 
             builder.InsertImage(
-                folder + "image.jpg", // Tên hình ảnh
+                outputFolder + "image.jpg", // Tên hình ảnh
 
                 RelativeHorizontalPosition.Margin, // cách chiều dọc
                 100,
@@ -145,7 +154,7 @@ namespace API._Services.Services
                 200, // Chiều dài hình ảnh : Width
                 100, // chiều cao hình ảnh : Height
                 WrapType.Square);
-            string newSave = folder + "DocumentBuilderInsertFloatingImage_out.doc";
+            string newSave = outputFolder + "DocumentBuilderInsertFloatingImage_out.doc";
             doc.Save(newSave);
         }
 
@@ -153,7 +162,7 @@ namespace API._Services.Services
         {
             // For complete examples and data files, please go to https://github.com/aspose-words/Aspose.Words-for-.NET
             // The path to the documents directory.
-            Document doc = new Document(folder + "Image.SampleImages.doc");
+            Document doc = new Document(outputFolder + "Image.SampleImages.doc");
 
             NodeCollection shapes = doc.GetChildNodes(NodeType.Shape, true);
             int imageIndex = 0;
@@ -163,7 +172,7 @@ namespace API._Services.Services
                 {
                     string imageFileName = string.Format(
                         "Image.ExportImages.{0}_out{1}", imageIndex, FileFormatUtil.ImageTypeToExtension(shape.ImageData.ImageType));
-                    shape.ImageData.Save(folder + imageFileName);
+                    shape.ImageData.Save(outputFolder + imageFileName);
                     imageIndex++;
                 }
             }
@@ -270,7 +279,7 @@ namespace API._Services.Services
 
 
 
-            doc.Save(folder + @"DemoShapeChart.doc");
+            doc.Save(outputFolder + @"DemoShapeChart.doc");
         }
 
         public async Task BaoMat()
@@ -330,7 +339,7 @@ namespace API._Services.Services
             SignatureLine signatureLine = builder.InsertSignatureLine(signatureLineOptions).SignatureLine;
             signatureLine.ProviderId = Guid.Parse("CF5A7BB4-8F3C-4756-9DF6-BEF7F13259A2");
 
-            doc.Save(folder + "DocumentBuilder.SignatureLineProviderId.docx");
+            doc.Save(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx");
 
             // Set signing options. 
             SignOptions signOptions = new SignOptions
@@ -342,18 +351,18 @@ namespace API._Services.Services
             };
 
             // Create a certificate.
-            CertificateHolder certHolder = CertificateHolder.Create(folder + "morzal.pfx", "aw");
+            CertificateHolder certHolder = CertificateHolder.Create(outputFolder + "morzal.pfx", "aw");
 
             // We can sign the signature line programmatically.
-            DigitalSignatureUtil.Sign(folder + "DocumentBuilder.SignatureLineProviderId.docx", folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
+            DigitalSignatureUtil.Sign(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx", outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
 
             // Create the shape of the signature line.
-            doc = new Document(folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+            doc = new Document(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
             Shape shape = (Shape)doc.GetChild(NodeType.Shape, 0, true);
             signatureLine = shape.SignatureLine;
 
             // Loading signatures.
-            DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(folder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+            DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
 
         }
     }

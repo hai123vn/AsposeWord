@@ -198,6 +198,7 @@ export class FunctionUtility {
 
 
   download(result: Blob, fileName: string) {
+    debugger
     if (result.size == 0) {
       this.spinnerService.hide();
     }

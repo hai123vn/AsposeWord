@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { FormInputComponent } from './views/form-input/form-input.component';
 import { MainListComponent } from './views/main-list/main-list.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    FormsModule,
     HttpClientModule,
   ],
   providers: [],

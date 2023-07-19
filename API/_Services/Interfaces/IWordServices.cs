@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using API.Dtos;
 
 namespace API._Services.Interfaces
 {
     public interface IWordServices
     {
-        Task<List<string>> ChuyenDoiSangPDF(IFormFile file);
+        Task<List<FileOutput>> ChuyenDoiSangPDF(IFormFile file, string fileType);
         Task TimKiemVaThayThe();
         Task ChenVanBan();
         Task ThemHinhAnh();
