@@ -1,13 +1,15 @@
-using API._Interface;
-using API._Services;
+using API._Services.Interfaces;
+using API._Services.Services;
 using API.Extentions;
 using API.hub;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 builder.Services.AddCors();
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddScoped<IWordServices, WordServices>();
+
 //in-memory cache
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();

@@ -43,12 +43,12 @@ namespace API._Services.Services
             // Tiếp tục xử lý tương tự như bạn đã làm trước đây
             try
             {
-                var dataDir = Path.Combine(folder, file.FileName);
-                if (System.IO.File.Exists(dataDir))
-                {
-                    System.IO.File.Delete(dataDir); // Xóa file đã tải lên
-                }
-                var document = new Document(dataDir);
+                // var dataDir = Path.Combine(folder, file.FileName);
+                // if (System.IO.File.Exists(dataDir))
+                // {
+                //     System.IO.File.Delete(dataDir); // Xóa file đã tải lên
+                // }
+                var document = new Document();
                 document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".pdf", SaveFormat.Pdf);
                 document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".html", SaveFormat.Html);
                 document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".md", SaveFormat.Markdown);
