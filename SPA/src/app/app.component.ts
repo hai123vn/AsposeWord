@@ -5,11 +5,11 @@ import { SpinnerService } from './_core/spinner.service';
 import { SweetAlertService } from './_core/sweet-alert.service';
 import { Asposeword } from './_core/model/asposeword';
 
-// export interface Word {
-//   key: string;
-//   title: string;
-//   desc: string;
-// }
+export interface Word {
+  key: string;
+  title: string;
+  desc: string;
+}
 
 @Component({
   selector: 'app-root',
@@ -17,34 +17,10 @@ import { Asposeword } from './_core/model/asposeword';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-
   title = 'Aspose Word';
-  list: string[] = [];
-  fileWord: File;
-
   constructor(
-    private service: AsposewordService,
-    private functionUtility: FunctionUtility,
-    private spinerService: SpinnerService,
-    private alertService: SweetAlertService
   ) { }
 
-  onFileChange(event: any) {
-    this.fileWord = event.target.files[0];
-    console.log(this.fileWord);
-    this.service.uploadFile(this.fileWord).subscribe({
-      next: (res) => {
-        console.log(res);
-        this.list = res;
-      },
-      error: () => {
-      }
-    })
-  }
-
-  download() {
-
-  }
-
 }
+
 

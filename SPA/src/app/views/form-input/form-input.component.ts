@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-form-input',
@@ -13,7 +14,7 @@ export class FormInputComponent implements OnInit {
   media: UploadFile = <UploadFile>{
     file: null
   }
-
+  converttoFilePath: string[] = [];
   key: string = '';
   constructor(
     private route: ActivatedRoute,
@@ -26,9 +27,6 @@ export class FormInputComponent implements OnInit {
     this.key = this.route.snapshot.paramMap.get('key');
     console.log('this key', this.key);
   }
-
-
-
 
   onSelectFile(event: any) {
     if (event.target.files && event.target.files[0]) {
@@ -80,9 +78,19 @@ export class FormInputComponent implements OnInit {
         this.wordService.convertToPDF(this.media).subscribe({
           next: result => {
             console.log('ressult', result);
+            this.converttoFilePath = Object.values(result);
           }
         })
       }
     }
+  }
+
+  download(fileName: string) {
+    this.wordService.downloadFile(fileName).subscribe({
+      next: (res) => {
+        const blob = new Blob([res], { type: 'application/octet-stream' });
+        saveAs(blob, fileName);
+      },
+    })
   }
 }

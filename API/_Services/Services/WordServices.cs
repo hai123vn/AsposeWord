@@ -30,7 +30,8 @@ namespace API._Services.Services
 
         public async Task<List<string>> ChuyenDoiSangPDF(IFormFile file)
         {
-            List<string> fileName = new List<string> { };
+            List<string> fileNameList = new List<string>();
+
             // Lưu tệp từ IFormFile vào thư mục tạm thời với tên tệp gốc
             var filePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/" + file.FileName);
             string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
@@ -40,34 +41,41 @@ namespace API._Services.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            // Tiếp tục xử lý tương tự như bạn đã làm trước đây
             try
             {
-                // var dataDir = Path.Combine(folder, file.FileName);
-                // if (System.IO.File.Exists(dataDir))
-                // {
-                //     System.IO.File.Delete(dataDir); // Xóa file đã tải lên
-                // }
-                var document = new Document();
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".pdf", SaveFormat.Pdf);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".html", SaveFormat.Html);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".md", SaveFormat.Markdown);
-                document.Save(folder + Path.GetFileNameWithoutExtension(file.FileName) + ".jpg", SaveFormat.Jpeg);
+                // Mở tệp và chuyển đổi sang các định dạng khác nhau bằng Aspose.Words
+                var document = new Aspose.Words.Document(filePath);
+
+                // Lưu thành tệp PDF
+                var pdfPath = Path.Combine(folder, Path.GetFileNameWithoutExtension(file.FileName) + ".pdf");
+                document.Save(pdfPath, Aspose.Words.SaveFormat.Pdf);
+                fileNameList.Add(Path.GetFileName(pdfPath));
+
+                // Lưu thành tệp HTML
+                var htmlPath = Path.Combine(folder, Path.GetFileNameWithoutExtension(file.FileName) + ".html");
+                document.Save(htmlPath, Aspose.Words.SaveFormat.Html);
+                fileNameList.Add(Path.GetFileName(htmlPath));
+
+                // Lưu thành tệp JPG
+                var jpgPath = Path.Combine(folder, Path.GetFileNameWithoutExtension(file.FileName) + ".jpg");
+                document.Save(jpgPath, Aspose.Words.SaveFormat.Jpeg);
+                fileNameList.Add(Path.GetFileName(jpgPath));
+
+                // Lưu thành tệp Markdown
+                var mdPath = Path.Combine(folder, Path.GetFileNameWithoutExtension(file.FileName) + ".md");
+                document.Save(mdPath, Aspose.Words.SaveFormat.Markdown);
+                fileNameList.Add(Path.GetFileName(mdPath));
+
+                // Xóa tệp ban đầu sau khi chuyển đổi và lưu
+                File.Delete(filePath);
             }
             catch (Exception ex)
             {
-                // Nếu có lỗi trong quá trình xử lý, ghi nhật ký (logs) để xem chi tiết lỗi
-                // Hoặc thêm mã xử lý lỗi khác (ví dụ: thông báo lỗi) nếu cần
-                Console.WriteLine("Lỗi trong quá trình xử lý chuyển đổi và lưu tệp: " + ex.Message);
+                // Xử lý lỗi nếu có
+                Console.WriteLine("Lỗi trong quá trình chuyển đổi và lưu các tệp: " + ex.Message);
             }
 
-            // Thêm các tên tệp đã chuyển đổi vào danh sách fileNameList
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".pdf");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".html");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".md");
-            fileName.Add(Path.GetFileNameWithoutExtension(file.FileName) + ".jpg");
-
-            return fileName;
+            return fileNameList;
         }
 
         public async Task TimKiemVaThayThe()

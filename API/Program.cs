@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using API._Services.Interfaces;
 using API._Services.Services;
 using API.Extentions;
@@ -5,6 +6,9 @@ using API.hub;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+string filePath = Directory.GetCurrentDirectory() + "\\Resources\\" + "Aspose.Total.lic";
+Aspose.Words.License word = new Aspose.Words.License();
+word.SetLicense(filePath);
 builder.Services.AddCors();
 // Add services to the container.
 builder.Services.AddControllers();
