@@ -40,8 +40,9 @@ export class AsposeWordService {
         return this.http.get(`${this.baseApi}/ChenVaThaoTacBieuDo`);
     }
 
-    BaoMat() {
-        return this.http.get(`${this.baseApi}/BaoMat`);
+    baoMat(model: UploadFile) {
+        let formData = this.functions.toFormData(model);
+        return this.http.post<FileOutput>(`${this.baseApi}/BaoMat`, formData);
     }
 
     BaoMatVoiCHUKISO() {

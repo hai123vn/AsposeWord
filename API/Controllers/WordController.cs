@@ -52,42 +52,42 @@ namespace API.Controllers
         }
 
         [HttpGet("TimKiemVaThayThe")]
-        public async Task<IActionResult> TimKiemVaThayThe()
+        public async Task<IActionResult> TimKiemVaThayThe([FromForm] UploadFile model)
         {
             var result = _evi.TimKiemVaThayThe();
             return Ok();
         }
 
         [HttpGet("ThemHinhAnh")]
-        public async Task<IActionResult> ThemHinhAnh()
+        public async Task<IActionResult> ThemHinhAnh([FromForm] UploadFile model)
         {
             var result = _evi.ThemHinhAnh();
             return Ok();
         }
 
         [HttpGet("TrichXuatHinhAnh")]
-        public async Task<IActionResult> TrichXuatHinhAnh()
+        public async Task<IActionResult> TrichXuatHinhAnh([FromForm] UploadFile model)
         {
             var result = _evi.TrichXuatHinhAnh();
             return Ok();
         }
 
         [HttpGet("ChenVaThaoTacBieuDo")]
-        public async Task<IActionResult> ChenVaThaoTacBieuDo()
+        public async Task<IActionResult> ChenVaThaoTacBieuDo([FromForm] UploadFile model)
         {
             var result = _evi.ChenVaThaoTacBieuDo();
             return Ok();
         }
 
-        [HttpGet("BaoMat")]
-        public async Task<IActionResult> BaoMat()
+        [HttpPost("BaoMat")]
+        public async Task<IActionResult> BaoMat([FromForm] UploadFile model)
         {
-            var result = _evi.BaoMat();
+            var result = _evi.BaoMat(model);
             return Ok();
         }
 
         [HttpGet("BaoMatVoiCHUKISO")]
-        public async Task<IActionResult> BaoMatVoiCHUKISO()
+        public async Task<IActionResult> BaoMatVoiCHUKISO([FromForm] UploadFile model)
         {
             var result = _evi.BaoMatVoiCHUKISO();
             return Ok();

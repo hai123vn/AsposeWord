@@ -12,7 +12,7 @@ namespace API._Services.Interfaces
 
         Task ChenVaThaoTacBieuDo();
 
-        Task BaoMat();
+        Task<FileOutput> BaoMat(UploadFile model);
         Task BaoMatVoiCHUKISO();
     }
 }

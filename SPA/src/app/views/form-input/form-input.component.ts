@@ -13,7 +13,8 @@ export class FormInputComponent implements OnInit {
   filename = 'Vui lòng chọn file để upload';
   media: UploadFile = <UploadFile>{
     file: null,
-    fileType: 'PDF'
+    fileType: 'PDF',
+    password: ''
   }
 
   //#region Transfer 
@@ -94,6 +95,14 @@ export class FormInputComponent implements OnInit {
           next: result => {
             console.log('ressult', result);
             this.fileOutput = result;
+          }
+        })
+      }
+      if (this.key == "Security") {
+        this.wordService.baoMat(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
           }
         })
       }

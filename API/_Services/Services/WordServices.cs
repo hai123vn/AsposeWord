@@ -40,10 +40,7 @@ namespace API._Services.Services
             // Tạo biến trả về
             var fileName = new List<FileOutput>();
 
-            // Lấy filePath đầu vào
-            var filePath = Path.Combine(inputFolder + file.FileName);
-            // upload vào Input để lấy mẫu
-            var newFileName = await _functionUtility.UploadAsync(file, "input", Path.GetFileNameWithoutExtension(file.FileName));
+            string newFileName = await UploadFileToInput(file);
 
             // Lấy path file Mẫu
             var dataDir = Path.Combine(inputFolder, newFileName);
@@ -77,6 +74,14 @@ namespace API._Services.Services
             });
 
             return fileName;
+        }
+
+        private async Task<string> UploadFileToInput(IFormFile file)
+        {
+            // Lấy filePath đầu vào
+            var filePath = Path.Combine(inputFolder + file.FileName);
+            // upload vào Input để lấy mẫu
+            return await _functionUtility.UploadAsync(file, "input", Path.GetFileNameWithoutExtension(file.FileName));
         }
 
         public async Task TimKiemVaThayThe()
@@ -282,38 +287,44 @@ namespace API._Services.Services
             doc.Save(outputFolder + @"DemoShapeChart.doc");
         }
 
-        public async Task BaoMat()
+        public async Task<FileOutput> BaoMat(UploadFile model)
         {
-            var path = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/helloword.doc");
-            string folder = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/");
+
+            string newFileName = await UploadFileToInput(model.File);
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
             // tạo 1 file document với 1 file có đường dẫn có sẵn
-            Document document = new Document(path);
+            Document document = new Document(dataDir);
             //    CHỉ đọc
 
             // Enter a password that's up to 15 characters long.
-            document.WriteProtection.SetPassword("MyPassword");
+            document.WriteProtection.SetPassword(model.Password);
             document.WriteProtection.ReadOnlyRecommended = true;
             document.Protect(ProtectionType.ReadOnly);
 
             // Set Mật khẩu
             // Create a document.
-            Document doc = new Document();
-            DocumentBuilder builder = new DocumentBuilder(doc);
-            builder.Write("Hello world!");
+            // Document doc = new Document();
+            // DocumentBuilder builder = new DocumentBuilder(doc);
+            // builder.Write("Hello world!");
 
             // DocSaveOptions only applies to Doc and Dot save formats.
             DocSaveOptions options = new DocSaveOptions(SaveFormat.Doc);
 
             // Set a password with which the document will be encrypted, and which will be required to open it.
-            options.Password = "MyPassword";
+            options.Password = model.Password;
 
 
             //Hạn chế chỉnh sửa
             // doc.Protect(ProtectionType.NoProtection, "password");
 
+             string exportPath = $"{outputFolder}/{model.File.FileName}";
+            
             //Chữ kí số
 
-            document.Save(folder + "Security.docx", SaveFormat.Docx);
+            document.Save(outputFolder + model.File.FileName, SaveFormat.Docx);
+
+            return new FileOutput(){FileName = newFileName, Url = exportPath};
         }
 
         public async Task BaoMatVoiCHUKISO()
