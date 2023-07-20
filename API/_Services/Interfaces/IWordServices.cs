@@ -8,9 +8,9 @@ namespace API._Services.Interfaces
         Task TimKiemVaThayThe();
         Task ChenVanBan();
         Task<FileOutput> ThemHinhAnh(UploadFile model);
-        Task TrichXuatHinhAnh();
+        Task<List<FileOutput>> TrichXuatHinhAnh(UploadFile model);
 
-        Task ChenVaThaoTacBieuDo();
+        Task<FileOutput> ChenVaThaoTacBieuDo(UploadFile model);
 
         Task<FileOutput> BaoMat(UploadFile model);
         Task<FileOutput> BaoMatVoiCHUKISO(UploadFile model);

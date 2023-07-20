@@ -35,7 +35,7 @@ export class AsposeWordService {
 
     TrichXuatHinhAnh(model: UploadFile) {
         let formData = this.functions.toFormData(model);
-        return this.http.post<FileOutput>(`${this.baseApi}/TrichXuatHinhAnh`, formData);
+        return this.http.post<FileOutput[]>(`${this.baseApi}/TrichXuatHinhAnh`, formData);
     }
 
     ChenVaThaoTacBieuDo(model: UploadFile) {

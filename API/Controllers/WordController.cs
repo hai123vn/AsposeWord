@@ -68,14 +68,14 @@ namespace API.Controllers
         [HttpPost("TrichXuatHinhAnh")]
         public async Task<IActionResult> TrichXuatHinhAnh([FromForm] UploadFile model)
         {
-            var result = _evi.TrichXuatHinhAnh();
+            var result = await _evi.TrichXuatHinhAnh(model);
             return Ok(result);
         }
 
         [HttpPost("ChenVaThaoTacBieuDo")]
         public async Task<IActionResult> ChenVaThaoTacBieuDo([FromForm] UploadFile model)
         {
-            var result = _evi.ChenVaThaoTacBieuDo();
+            var result = await _evi.ChenVaThaoTacBieuDo(model);
             return Ok(result);
         }
 
@@ -89,7 +89,7 @@ namespace API.Controllers
         [HttpPost("BaoMatVoiCHUKISO")]
         public async Task<IActionResult> BaoMatVoiCHUKISO([FromForm] UploadFile model)
         {
-            var result =  await _evi.BaoMatVoiCHUKISO(model);
+            var result = await _evi.BaoMatVoiCHUKISO(model);
             return Ok(result);
         }
     }

@@ -174,31 +174,49 @@ namespace API._Services.Services
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
-        public async Task TrichXuatHinhAnh()
+        public async Task<List<FileOutput>> TrichXuatHinhAnh(UploadFile model)
         {
-            // For complete examples and data files, please go to https://github.com/aspose-words/Aspose.Words-for-.NET
-            // The path to the documents directory.
-            Document doc = new Document(outputFolder + "Image.SampleImages.doc");
+            var result = new List<FileOutput>();
 
-            NodeCollection shapes = doc.GetChildNodes(NodeType.Shape, true);
+
+            string newFileName = await UploadFileToInput(model.File);
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            Document document = new Document(dataDir);
+
+            NodeCollection shapes = document.GetChildNodes(NodeType.Shape, true);
             int imageIndex = 0;
             foreach (Shape shape in shapes)
             {
                 if (shape.HasImage)
                 {
-                    string imageFileName = string.Format(
-                        "Image.ExportImages.{0}_out{1}", imageIndex, FileFormatUtil.ImageTypeToExtension(shape.ImageData.ImageType));
-                    shape.ImageData.Save(outputFolder + imageFileName);
+                    string fileName = string.Format("Image.ExportImages.{0}_out{1}", imageIndex, FileFormatUtil.ImageTypeToExtension(shape.ImageData.ImageType));
+                    string exportPath = $"{outputFolder}/{fileName}";
+
+                    shape.ImageData.Save(exportPath);
                     imageIndex++;
+
+                    result.Add(new FileOutput()
+                    {
+                        FileName = fileName,
+                        Url = exportPath
+                    });
                 }
             }
-            throw new NotImplementedException();
+
+            return result;
         }
 
-        public async Task ChenVaThaoTacBieuDo()
+        public async Task<FileOutput> ChenVaThaoTacBieuDo(UploadFile model)
         {
-            Document doc = new Document();
-            DocumentBuilder builder = new DocumentBuilder(doc);
+            string newFileName = await UploadFileToInput(model.File);
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            Document document = new Document(dataDir);
+            DocumentBuilder builder = new DocumentBuilder(document);
+
 
             #region Column Chart
             Shape shapeColumn = builder.InsertChart(ChartType.Column, 432, 252);
@@ -252,8 +270,8 @@ namespace API._Services.Services
             chartLine.Series.Clear();
 
             ChartSeries series = chartLine.Series.Add("Series 1",
-    new string[] { "Category1", "Category2", "Category3" },
-    new double[] { 2.7, 3.2, 0.8 });
+                        new string[] { "Category1", "Category2", "Category3" },
+                        new double[] { 2.7, 3.2, 0.8 });
 
             ChartSeriesCollection seriesCollLine = chartLine.Series;
             // Check series count.
@@ -277,25 +295,33 @@ namespace API._Services.Services
             ChartSeries series0 = shapeLine.Chart.Series[0];
 
             // Get second series.
-            ChartSeries series1 = shapeLine.Chart.Series[1];
+            // ChartSeries series1 = shapeLine.Chart.Series[1];
 
             // Change first series name.
             series0.Name = "Trí";
 
             // Change second series name.
-            series1.Name = "Hải";
+            // series1.Name = "Hải";
 
             // You can also specify whether the line connecting the points on the chart shall be smoothed using Catmull-Rom splines.
             series0.Smooth = true;
-            series1.Smooth = true;
+            // series1.Smooth = true;
             #endregion
 
 
+            string extention = Path.GetExtension(model.File.FileName);
+            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_Add_Sharp{extention}";
+            string exportPath = $"{outputFolder}/{fileName}";
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(exportPath))
+                File.Delete(exportPath);
 
 
+            //Chữ kí số
 
+            document.Save(exportPath, SaveFormat.Docx);
 
-            doc.Save(outputFolder + @"DemoShapeChart.doc");
+            return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
         public async Task<FileOutput> BaoMat(UploadFile model)

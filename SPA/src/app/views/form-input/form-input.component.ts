@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FileOutput, UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
 import { FunctionUtility } from 'src/app/_core/utilities';
@@ -10,6 +10,7 @@ import { FunctionUtility } from 'src/app/_core/utilities';
   styleUrls: ['./form-input.component.scss']
 })
 export class FormInputComponent implements OnInit {
+  accept: string = '.doc, .docx, .docm, '
   filename = 'Vui lòng chọn file để upload';
   media: UploadFile = <UploadFile>{
     file: null,
@@ -30,6 +31,7 @@ export class FormInputComponent implements OnInit {
   key: string = '';
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private wordService: AsposeWordService,
     private functionUtility: FunctionUtility
   ) { }
@@ -51,39 +53,23 @@ export class FormInputComponent implements OnInit {
       // check file name extension
       const fileNameExtension = event.target.files[0].name.split('.').pop();
       const fileZise = event.target.files[0].size;
-      // if (fileNameExtension !== 'jpg' && fileNameExtension !== 'jpeg'
-      //   && fileNameExtension !== 'png' && fileNameExtension !== 'JPG'
-      //   && fileNameExtension !== 'JPEG' && fileNameExtension !== 'PNG'
-      //   && fileNameExtension !== 'mp4' && fileNameExtension !== 'MP4') {
-      //   this.alertServices.showWarning(MessageConstant.VALIDATE_IMAGE_EXTENTION);
-      //   return;
-      // }
-      // // Image cannot be larger than 5MB
-      // if (fileZise > 5242880 && (fileNameExtension === 'jpg' || fileNameExtension === 'jpeg' ||
-      //   fileNameExtension === 'png' || fileNameExtension === 'JPG' ||
-      //   fileNameExtension === 'JPEG' || fileNameExtension === 'PNG')
-      // ) {
-      //   this.alertServices.showWarning(MessageConstant.VALIDATE_IMAGE_NOT_LARGE_5MB);
-      //   return;
-      // }
-      // // Video cannot be larger than 20MB
-      // if (fileZise > 20971520 && (fileNameExtension === 'mp4' || fileNameExtension === 'MP4')) {
-      //   this.alertServices.showWarning(MessageConstant.VALIDATE_VIDEO_NOT_LARGE_20MB);
-      //   return;
-      // }
+
+      if (!this.accept.includes(fileNameExtension.toLowerCase())) {
+        this.filename = 'Choose file...';
+        return;
+      }
+
+      // Video cannot be larger than 20MB
+      if (fileZise > 20971520) {
+        this.filename = 'File phải nhỏ hơn 20mb';
+        return;
+      }
 
       this.media.file = event.target.files[0];
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
       reader.onload = (e) => {
         this.filename = event.target.files[0].name;
-        // called once readAsDataURL is completed
-        // this.media.fileBase = e.target!.result!.toString();
-        // this.media.fileName = event.target.files[0].name;
-        // this.media.extention = fileNameExtension;
-        // this.media.size = fileZise;
-        // this.media.type = event.target.files[0].type;
-        // this.returnFile(this.media);
       };
     }
   }
@@ -100,6 +86,22 @@ export class FormInputComponent implements OnInit {
       }
       if (this.key == "Picture") {
         this.wordService.ThemHinhAnh(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
+          }
+        })
+      }
+      if (this.key == "ExportPicture") {
+        this.wordService.TrichXuatHinhAnh(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = result;
+          }
+        })
+      }
+      if (this.key == "Shap") {
+        this.wordService.ChenVaThaoTacBieuDo(this.media).subscribe({
           next: result => {
             console.log('ressult', result);
             this.fileOutput = [{ ...result }];
@@ -137,4 +139,7 @@ export class FormInputComponent implements OnInit {
   onChooseFileTypeTransfer(type: string) {
     this.media.fileType = type;
   }
+
+
+  backToMain = () => this.router.navigate(['/']);
 }

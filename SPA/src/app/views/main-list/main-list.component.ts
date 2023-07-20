@@ -30,6 +30,11 @@ export class MainListComponent {
       desc: 'Chèn hình ảnh vào trong file word'
     },
     {
+      key: 'ExportPicture',
+      title: 'Trích Xuất Hình ảnh',
+      desc: 'Chèn hình ảnh vào trong file word'
+    },
+    {
       key: 'Shap',
       title: 'biểu đồ',
       desc: 'Tạo và thao tác với bản đồ'
