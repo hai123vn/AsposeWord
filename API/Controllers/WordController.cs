@@ -60,6 +60,14 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("ChenVanBan")]
+        public async Task<IActionResult> ChenVanBan(IFormFile file)
+        {
+
+            var result = await _evi.ChenVanBan(file);
+            return Ok(result);
+        }
+
         [HttpGet("ThemHinhAnh")]
         public async Task<IActionResult> ThemHinhAnh([FromForm] UploadFile model)
         {

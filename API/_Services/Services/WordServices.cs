@@ -87,11 +87,18 @@ namespace API._Services.Services
         public async Task<FileOutput> TimKiemVaThayThe(IFormFile file, string noiDungCanTim, string noiDungThayThe)
         {
             #region Đọc file từ đường dẫn
-            var path = Path.Combine(_environment.ContentRootPath, inputFolder + file.FileName);
+            // Tạo biến trả về
+            var fileName = new List<FileOutput>();
+
+            string newFileName = await UploadFileToInput(file);
+
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+
             #endregion
 
             // Tạo 1 file document với 1 file có đường dẫn có sẵn
-            Document document = new Document(path);
+            Document document = new Document(dataDir);
 
             #region Tìm và thay thế
             // Chúng ta sẽ dùng "FindReplaceOptions" để tìm và thay thế.
@@ -126,32 +133,36 @@ namespace API._Services.Services
         }
 
 
-        public async Task ChenVanBan()
+        public async Task<FileOutput> ChenVanBan(IFormFile file)
         {
-            Document newDoc = new Document();
-            List<Paragraph> paragraphList = new List<Paragraph>();
-            // paragraphList.Add(new Paragraph("First paragraph"));
-            // paragraphList.Add(new Paragraph("Second paragraph"));
+            string newFileName = await UploadFileToInput(file);
+            string dataDir = Path.Combine(inputFolder, newFileName);
+            // Initialize document.
+            Document doc = new Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
 
+            // Specify font formatting
+            Font font = builder.Font;
+            font.Size = 16;
+            font.Bold = true;
+            font.Color = System.Drawing.Color.Blue;
+            font.Name = "Arial";
+            font.Underline = Underline.Dash;
 
-            DocumentBuilder builder = new DocumentBuilder(newDoc);
-            foreach (Paragraph para in paragraphList)
+            // Specify paragraph formatting
+            ParagraphFormat paragraphFormat = builder.ParagraphFormat;
+            paragraphFormat.FirstLineIndent = 8;
+            paragraphFormat.Alignment = ParagraphAlignment.Justify;
+            paragraphFormat.KeepTogether = true;
+
+            builder.Writeln("A whole paragraph.");
+            dataDir = dataDir + "DocumentBuilderInsertParagraph_out.doc";
+            doc.Save(dataDir);
+            return new FileOutput()
             {
-                Section section = para.ParentSection;
-
-                // Insert section break if the paragraph is not at the beginning of a section already.
-                if (para != section.Body.FirstParagraph)
-                {
-                    builder.MoveTo(para.FirstChild);
-                    builder.InsertBreak(BreakType.SectionBreakNewPage);
-
-                    // This is the paragraph that was inserted at the end of the now old section.
-                    // We don't really need the extra paragraph, we just needed the section.
-                    section.Body.LastParagraph.Remove();
-                }
-            }
-
-            newDoc.Save(outputFolder + "ChenVanBan.docx", SaveFormat.Docx);
+                FileName = newFileName,
+                Url = dataDir
+            };
         }
 
         public async Task ThemHinhAnh()

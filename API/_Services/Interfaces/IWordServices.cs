@@ -6,7 +6,7 @@ namespace API._Services.Interfaces
     {
         Task<List<FileOutput>> ChuyenDoiSangPDF(IFormFile file, string fileType);
         Task<FileOutput> TimKiemVaThayThe(IFormFile file, string noiDungCanTim, string noiDungThayThe);
-        Task ChenVanBan();
+        Task<FileOutput> ChenVanBan(IFormFile file);
         Task ThemHinhAnh();
         Task TrichXuatHinhAnh();
 
