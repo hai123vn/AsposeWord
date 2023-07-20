@@ -1,7 +1,7 @@
 export interface UploadFile {
     file: File,
     fileType: string;
-    password: string;
+    password?: string;
 }
 
 export interface FileOutput{
