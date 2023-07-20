@@ -23,6 +23,7 @@ builder.Services.AuthenticationDI(configuration);
 builder.Services.RepositoryDI();
 builder.Services.ServicesDI();
 
+DependenceInjectionsExtentions.AsposeInstall();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.SwaggerDI();
 

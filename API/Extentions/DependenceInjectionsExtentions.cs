@@ -23,6 +23,7 @@ namespace API.Extentions
         public static void ServicesDI(this IServiceCollection services)
         {
             // services.AddScoped<IJwtUtility, JwtUtility>();
+            services.AddScoped<IUploadFileUtility, UploadFileUtility>();
             services.AddScoped<IWordServices, WordServices>();
         }
 
@@ -90,5 +91,12 @@ namespace API.Extentions
                     });
                 });
         }
+    
+        public static void AsposeInstall (){
+            Aspose.Words.License cellLicense = new Aspose.Words.License();
+            string filePath = Directory.GetCurrentDirectory() + "\\Resource\\" + "Aspose.Total.lic";
+            cellLicense.SetLicense(filePath);
+        }
+    
     }
 }

@@ -1,28 +1,73 @@
-<div class="box-upload">
-  <label class="text-muted text-upload">
-    Upload File
-  </label>
-  <span class="control-fileupload">
-    <label for="file"> {{filename}}</label>
-    <input type="file" id="file" (change)="onSelectFile($event)">
-  </span>
+<div class="container p-5">
+  <div class="row ">
+    <div class="col-md-6">
+      <div class="box-upload">
+        <label class="text-primary fw-bold text-upload mb-3">
+          ASPOSE WORD
+        </label>
+        <span class="control-fileupload">
+          <label for="file"> {{filename}}</label>
+          <input type="file" id="file" (change)="onSelectFile($event)">
+        </span>
 
-  <button type="button" class="btn btn-sm btn-primary mt-1"
-    (click)="uploadFile()" [disabled]="media.file == null">
-    <i class="fas fa-upload"></i>
-    Upload
-  </button>
-
-  <div *ngIf="converttoFilePath.length > 0">
-    <h3>Danh sách các tệp đã chuyển đổi:</h3>
-    <ul>
-      <li *ngFor="let file of converttoFilePath">
-        <div>
-          <div> <a target="_blank">{{ file }}</a></div>
-          <button type="button" class="btn btn-success"
-            (click)="download(file)">Tải xuống</button>
+        <div *ngIf="key == 'Transfer'" class="mt-3">
+          <label class="text-muted">
+            Chọn loại chuyển đổi
+          </label>
+          <div class="row">
+            <div class="col-2" *ngFor="let item of fileTypes, let i = index">
+              <div class="form-check">
+                <input class="form-check-input" type="radio"
+                  name="fileTypeTransfer" [id]="item + i"
+                  [checked]="media.fileType == item"
+                  (click)="onChooseFileTypeTransfer(item)">
+                <label class="form-check-label" [for]="item + i">
+                  {{item}}
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
-      </li>
-    </ul>
+
+
+        <div *ngIf="key == 'Security'" class="mt-3">
+
+          <div class="row">
+            <div class="col-12">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">Passwords</div>
+                </div>
+                <input type="text" class="form-control" name="password"
+                  maxlength="8" minlength="1" [(ngModel)]="media.password"
+                  [required]="key == 'Security'">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-sm btn-success mt-3"
+          (click)="uploadFile()" [disabled]="media.file == null">
+          <i class="fa fa-upload" aria-hidden="true"></i>
+          Upload
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6 result-box">
+      <ul>
+        <li *ngFor="let file of fileOutput">
+          <span>
+            {{file.fileName}}
+          </span>
+
+          <button class="btn btn-sm btn-success float-end"
+            (click)="downloadFile(file)">
+            <i class="fa fa-download"></i>
+            download
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
+
 </div>

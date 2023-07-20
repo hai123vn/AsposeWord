@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UploadFile } from 'src/app/_core/models/upload-file';
+import { FileOutput, UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
-import { saveAs } from 'file-saver';
+import { FunctionUtility } from 'src/app/_core/utilities';
 
 @Component({
   selector: 'app-form-input',
@@ -12,13 +12,26 @@ import { saveAs } from 'file-saver';
 export class FormInputComponent implements OnInit {
   filename = 'Vui lòng chọn file để upload';
   media: UploadFile = <UploadFile>{
-    file: null
+    file: null,
+    fileType: 'PDF',
+    password: ''
   }
-  converttoFilePath: string[] = [];
+
+  //#region Transfer
+  fileTypes: string[] = [
+    'PDF', 'HTML', 'MD', 'JPEG'
+  ]
+
+  //#endregion
+
+
+  fileOutput: FileOutput[] = [];
+
   key: string = '';
   constructor(
     private route: ActivatedRoute,
-    private wordService: AsposeWordService
+    private wordService: AsposeWordService,
+    private functionUtility: FunctionUtility
   ) { }
 
   ngOnInit(): void {
@@ -78,19 +91,31 @@ export class FormInputComponent implements OnInit {
         this.wordService.convertToPDF(this.media).subscribe({
           next: result => {
             console.log('ressult', result);
-            this.converttoFilePath = Object.values(result);
+            this.fileOutput = result;
+          }
+        })
+      }
+      if (this.key == "Security") {
+        this.wordService.baoMat(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
           }
         })
       }
     }
   }
 
-  download(fileName: string) {
-    this.wordService.downloadFile(fileName).subscribe({
-      next: (res) => {
-        const blob = new Blob([res], { type: 'application/octet-stream' });
-        saveAs(blob, fileName);
-      },
+  downloadFile(file: FileOutput) {
+    this.wordService.downloadFile(file).subscribe({
+      next: (ress: Blob) => {
+        console.log('ress', ress);
+        this.functionUtility.download(ress, file.fileName)
+      }
     })
+  }
+
+  onChooseFileTypeTransfer(type: string) {
+    this.media.fileType = type;
   }
 }

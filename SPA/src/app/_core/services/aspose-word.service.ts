@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FunctionUtility } from '../utilities';
-import { UploadFile } from '../models/upload-file';
+import { FileOutput, UploadFile } from '../models/upload-file';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,11 @@ export class AsposeWordService {
 
   convertToPDF(model: UploadFile) {
     let formData = this.functions.toFormData(model);
-    return this.http.post<string[]>(`${this.baseApi}/ConvertToPDF`, formData);
+    return this.http.post<FileOutput[]>(`${this.baseApi}/ConvertToPDF`, formData);
   }
 
-  downloadFile(fileName: string) {
-    return this.http.post(`${this.baseApi}/DownloadFile`, {}, { responseType: 'blob', params: { fileName } });
+  downloadFile(model: FileOutput) {
+    return this.http.post(`${this.baseApi}/DownloadFile`, model, { responseType: 'blob' });
   }
 
   TimKiemVaThayThe() {
@@ -39,8 +40,9 @@ export class AsposeWordService {
     return this.http.get(`${this.baseApi}/ChenVaThaoTacBieuDo`);
   }
 
-  BaoMat() {
-    return this.http.get(`${this.baseApi}/BaoMat`);
+  baoMat(model: UploadFile) {
+    let formData = this.functions.toFormData(model);
+    return this.http.post<FileOutput>(`${this.baseApi}/BaoMat`, formData);
   }
 
   BaoMatVoiCHUKISO() {
