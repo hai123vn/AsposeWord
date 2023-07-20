@@ -55,42 +55,42 @@ namespace API.Controllers
         public async Task<IActionResult> TimKiemVaThayThe([FromForm] UploadFile model)
         {
             var result = _evi.TimKiemVaThayThe();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("ThemHinhAnh")]
         public async Task<IActionResult> ThemHinhAnh([FromForm] UploadFile model)
         {
             var result = _evi.ThemHinhAnh();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("TrichXuatHinhAnh")]
         public async Task<IActionResult> TrichXuatHinhAnh([FromForm] UploadFile model)
         {
             var result = _evi.TrichXuatHinhAnh();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet("ChenVaThaoTacBieuDo")]
         public async Task<IActionResult> ChenVaThaoTacBieuDo([FromForm] UploadFile model)
         {
             var result = _evi.ChenVaThaoTacBieuDo();
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPost("BaoMat")]
         public async Task<IActionResult> BaoMat([FromForm] UploadFile model)
         {
-            var result = _evi.BaoMat(model);
-            return Ok();
+            var result = await _evi.BaoMat(model);
+            return Ok(result);
         }
 
         [HttpGet("BaoMatVoiCHUKISO")]
         public async Task<IActionResult> BaoMatVoiCHUKISO([FromForm] UploadFile model)
         {
-            var result = _evi.BaoMatVoiCHUKISO();
-            return Ok();
+            var result =  _evi.BaoMatVoiCHUKISO();
+            return Ok(result);
         }
     }
 }

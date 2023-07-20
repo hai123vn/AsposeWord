@@ -299,8 +299,8 @@ namespace API._Services.Services
 
             // Enter a password that's up to 15 characters long.
             document.WriteProtection.SetPassword(model.Password);
-            document.WriteProtection.ReadOnlyRecommended = true;
-            document.Protect(ProtectionType.ReadOnly);
+            document.WriteProtection.ReadOnlyRecommended = false;
+            // document.Protect(ProtectionType.ReadOnly);   
 
             // Set Mật khẩu
             // Create a document.
@@ -317,14 +317,19 @@ namespace API._Services.Services
 
             //Hạn chế chỉnh sửa
             // doc.Protect(ProtectionType.NoProtection, "password");
+            string extention = Path.GetExtension(model.File.FileName);
+            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasPassword.{extention}";
+            string exportPath = $"{outputFolder}/{fileName}";
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(exportPath))
+                File.Delete(exportPath);
 
-             string exportPath = $"{outputFolder}/{model.File.FileName}";
-            
+
             //Chữ kí số
 
-            document.Save(outputFolder + model.File.FileName, SaveFormat.Docx);
+            document.Save(exportPath, SaveFormat.Docx);
 
-            return new FileOutput(){FileName = newFileName, Url = exportPath};
+            return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
         public async Task BaoMatVoiCHUKISO()
