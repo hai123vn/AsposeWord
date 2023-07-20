@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FileOutput, UploadFile } from 'src/app/_core/models/upload-file';
+import { FileOutput, NDWord, UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
 import { FunctionUtility } from 'src/app/_core/utilities';
 
@@ -15,6 +15,11 @@ export class FormInputComponent implements OnInit {
     file: null,
     fileType: 'PDF',
     password: ''
+  }
+
+  ndWord: NDWord = <NDWord>{
+    noiDungCanTim: '',
+    noiDungThayThe: ''
   }
 
   //#region Transfer
@@ -97,6 +102,14 @@ export class FormInputComponent implements OnInit {
       }
       if (this.key == "Security") {
         this.wordService.baoMat(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
+          }
+        })
+      }
+      if (this.key == "SearchPlace") {
+        this.wordService.TimKiemVaThayThe(this.media, this.ndWord).subscribe({
           next: result => {
             console.log('ressult', result);
             this.fileOutput = [{ ...result }];

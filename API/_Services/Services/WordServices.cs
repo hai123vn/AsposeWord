@@ -84,33 +84,45 @@ namespace API._Services.Services
             return await _functionUtility.UploadAsync(file, "input", Path.GetFileNameWithoutExtension(file.FileName));
         }
 
-        public async Task TimKiemVaThayThe()
+        public async Task<FileOutput> TimKiemVaThayThe(IFormFile file, string noiDungCanTim, string noiDungThayThe)
         {
             #region Đọc file từ đường dẫn
-            var path = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/document.pdf");
+            var path = Path.Combine(_environment.ContentRootPath, inputFolder + file.FileName);
             #endregion
 
-
-            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            // Tạo 1 file document với 1 file có đường dẫn có sẵn
             Document document = new Document(path);
 
-            #region  Tìm và thay thế
-            // Chúng ta sẽ dùng "FindReplaceOptions" để tìm và thay thế .
+            #region Tìm và thay thế
+            // Chúng ta sẽ dùng "FindReplaceOptions" để tìm và thay thế.
             FindReplaceOptions options = new FindReplaceOptions();
 
             // Set phân biệt chữ hoa, chữ thường
             options.MatchCase = true;
 
-            // thực hiện tìm kiếm và thay thế, cùng với phân biệt hoa thường
-            document.Range.Replace("Ruby", "Jade", options);
+            // Thiết lập nội dung cần tìm và thay thế từ người dùng nhập vào
+            document.Range.Replace(noiDungCanTim, noiDungThayThe, options);
             #endregion
 
-            // 
-            XlsxSaveOptions saveOptions = new XlsxSaveOptions();
-            // 
-            saveOptions.CompressionLevel = CompressionLevel.Maximum;
+            // Lưu file kết quả với cùng định dạng như file ban đầu
+            var outputFileName = file.FileName;
+            var outputFilePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/", outputFileName);
 
-            document.Save(outputFolder + "BaseConversions.CompressXlsx.xlsx", saveOptions);
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(outputFilePath))
+                File.Delete(outputFilePath);
+
+            // Lấy định dạng của file ban đầu
+            var inputFileFormat = Path.GetExtension(file.FileName).ToLower();
+
+            // Lưu file theo định dạng
+
+            document.Save(outputFilePath, SaveFormat.Docx);
+            return new FileOutput()
+            {
+                FileName = outputFileName,
+                Url = outputFilePath
+            };
         }
 
 
@@ -241,8 +253,8 @@ namespace API._Services.Services
             chartLine.Series.Clear();
 
             ChartSeries series = chartLine.Series.Add("Series 1",
-    new string[] { "Category1", "Category2", "Category3" },
-    new double[] { 2.7, 3.2, 0.8 });
+            new string[] { "Category1", "Category2", "Category3" },
+            new double[] { 2.7, 3.2, 0.8 });
 
             ChartSeriesCollection seriesCollLine = chartLine.Series;
             // Check series count.

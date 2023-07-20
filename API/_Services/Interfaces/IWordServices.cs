@@ -5,7 +5,7 @@ namespace API._Services.Interfaces
     public interface IWordServices
     {
         Task<List<FileOutput>> ChuyenDoiSangPDF(IFormFile file, string fileType);
-        Task TimKiemVaThayThe();
+        Task<FileOutput> TimKiemVaThayThe(IFormFile file, string noiDungCanTim, string noiDungThayThe);
         Task ChenVanBan();
         Task ThemHinhAnh();
         Task TrichXuatHinhAnh();

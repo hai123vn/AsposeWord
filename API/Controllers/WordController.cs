@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API._Services.Interfaces;
 using API.Dtos;
@@ -51,10 +52,11 @@ namespace API.Controllers
             // return File(filePaths, mimeType, file.FileName);
         }
 
-        [HttpGet("TimKiemVaThayThe")]
-        public async Task<IActionResult> TimKiemVaThayThe([FromForm] UploadFile model)
+        [HttpPost("TimKiemVaThayThe")]
+        public async Task<IActionResult> TimKiemVaThayThe(IFormFile file, string noiDungCanTim, string noiDungThayThe)
         {
-            var result = _evi.TimKiemVaThayThe();
+
+            var result = await _evi.TimKiemVaThayThe(file, noiDungCanTim, noiDungThayThe);
             return Ok(result);
         }
 
@@ -89,7 +91,7 @@ namespace API.Controllers
         [HttpGet("BaoMatVoiCHUKISO")]
         public async Task<IActionResult> BaoMatVoiCHUKISO([FromForm] UploadFile model)
         {
-            var result =  _evi.BaoMatVoiCHUKISO();
+            var result = _evi.BaoMatVoiCHUKISO();
             return Ok(result);
         }
     }

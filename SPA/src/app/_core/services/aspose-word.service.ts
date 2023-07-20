@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FunctionUtility } from '../utilities';
-import { FileOutput, UploadFile } from '../models/upload-file';
+import { FileOutput, NDWord, UploadFile } from '../models/upload-file';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -23,8 +23,10 @@ export class AsposeWordService {
     return this.http.post(`${this.baseApi}/DownloadFile`, model, { responseType: 'blob' });
   }
 
-  TimKiemVaThayThe() {
-    return this.http.get(`${this.baseApi}/TimKiemVaThayThe`);
+  TimKiemVaThayThe(model: UploadFile, param: NDWord) {
+    let params = new HttpParams().appendAll({ ...param })
+    let formData = this.functions.toFormData(model);
+    return this.http.post<FileOutput>(`${this.baseApi}/TimKiemVaThayThe`, formData, { params });
   }
 
 
