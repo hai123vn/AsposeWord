@@ -38,6 +38,11 @@ export class MainListComponent {
       key: 'Security',
       title: 'Bảo mật',
       desc: 'Cấu hình file word chỉ có thể đọc , hoặc hạn chế chỉnh sửa'
+    },
+    {
+      key: 'BaoMatVoiCHUKISO',
+      title: 'Bảo mật với chữ kí số',
+      desc: 'Cấu hình file word có thêm chữ kí'
     }
   ]
 

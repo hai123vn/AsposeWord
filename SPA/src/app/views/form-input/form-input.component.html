@@ -48,6 +48,9 @@
             </div>
         </div>
         <div class="col-md-6 result-box">
+            <label class="text-muted">
+               Kết Quả
+            </label>
             <ul>
                 <li *ngFor="let file of fileOutput">
                     <span>
@@ -56,7 +59,7 @@
 
                     <button class="btn btn-sm btn-success float-end" (click)="downloadFile(file)"> 
                         <i class="fa fa-download"></i>
-                        download
+                        Download
                     </button>
                 </li>
             </ul>

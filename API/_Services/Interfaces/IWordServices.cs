@@ -7,12 +7,12 @@ namespace API._Services.Interfaces
         Task<List<FileOutput>> ChuyenDoiSangPDF(IFormFile file, string fileType);
         Task TimKiemVaThayThe();
         Task ChenVanBan();
-        Task ThemHinhAnh();
+        Task<FileOutput> ThemHinhAnh(UploadFile model);
         Task TrichXuatHinhAnh();
 
         Task ChenVaThaoTacBieuDo();
 
         Task<FileOutput> BaoMat(UploadFile model);
-        Task BaoMatVoiCHUKISO();
+        Task<FileOutput> BaoMatVoiCHUKISO(UploadFile model);
     }
 }

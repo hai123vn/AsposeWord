@@ -142,12 +142,15 @@ namespace API._Services.Services
             newDoc.Save(outputFolder + "ChenVanBan.docx", SaveFormat.Docx);
         }
 
-        public async Task ThemHinhAnh()
+        public async Task<FileOutput> ThemHinhAnh(UploadFile model)
         {
-            // Tạo document 
-            Document doc = new Document();
+            string newFileName = await UploadFileToInput(model.File);
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            Document document = new Document(dataDir);
+            DocumentBuilder builder = new DocumentBuilder(document);
             // Xây dựng Document
-            DocumentBuilder builder = new DocumentBuilder(doc);
 
             builder.InsertImage(
                 outputFolder + "image.jpg", // Tên hình ảnh
@@ -159,8 +162,16 @@ namespace API._Services.Services
                 200, // Chiều dài hình ảnh : Width
                 100, // chiều cao hình ảnh : Height
                 WrapType.Square);
-            string newSave = outputFolder + "DocumentBuilderInsertFloatingImage_out.doc";
-            doc.Save(newSave);
+
+            string extention = Path.GetExtension(model.File.FileName);
+            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasPicture{extention}";
+            string exportPath = $"{outputFolder}/{fileName}";
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(exportPath))
+                File.Delete(exportPath);
+            document.Save(exportPath);
+
+            return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
         public async Task TrichXuatHinhAnh()
@@ -300,7 +311,7 @@ namespace API._Services.Services
             // Enter a password that's up to 15 characters long.
             document.WriteProtection.SetPassword(model.Password);
             document.WriteProtection.ReadOnlyRecommended = false;
-            // document.Protect(ProtectionType.ReadOnly);   
+            document.Protect(ProtectionType.NoProtection);
 
             // Set Mật khẩu
             // Create a document.
@@ -318,7 +329,7 @@ namespace API._Services.Services
             //Hạn chế chỉnh sửa
             // doc.Protect(ProtectionType.NoProtection, "password");
             string extention = Path.GetExtension(model.File.FileName);
-            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasPassword.{extention}";
+            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasPassword{extention}";
             string exportPath = $"{outputFolder}/{fileName}";
             // Nếu file đã tồn tại thì xoá
             if (File.Exists(exportPath))
@@ -332,18 +343,21 @@ namespace API._Services.Services
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
-        public async Task BaoMatVoiCHUKISO()
+        public async Task<FileOutput> BaoMatVoiCHUKISO(UploadFile model)
         {
-            // Create a Document.
-            Document doc = new Document();
-            DocumentBuilder builder = new DocumentBuilder(doc);
+            string newFileName = await UploadFileToInput(model.File);
+            // Lấy path file Mẫu
+            var dataDir = Path.Combine(inputFolder, newFileName);
+            // tạo 1 file document với 1 file có đường dẫn có sẵn
+            Document document = new Document(dataDir);
+            DocumentBuilder builder = new DocumentBuilder(document);
 
             // Set signature line options.
             SignatureLineOptions signatureLineOptions = new SignatureLineOptions
             {
-                Signer = "Entername",
-                SignerTitle = "QA",
-                Email = "EnterSomeEmail",
+                Signer = "Lê Minh Trí",
+                SignerTitle = "Trí",
+                Email = "lmtri1908@gmail.com",
 
                 ShowDate = true,
                 DefaultInstructions = false,
@@ -355,31 +369,40 @@ namespace API._Services.Services
             SignatureLine signatureLine = builder.InsertSignatureLine(signatureLineOptions).SignatureLine;
             signatureLine.ProviderId = Guid.Parse("CF5A7BB4-8F3C-4756-9DF6-BEF7F13259A2");
 
-            doc.Save(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx");
+            string extention = Path.GetExtension(model.File.FileName);
+            string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasWriter{extention}";
+            string exportPath = $"{outputFolder}/{fileName}";
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(exportPath))
+                File.Delete(exportPath);
 
-            // Set signing options. 
-            SignOptions signOptions = new SignOptions
-            {
-                SignatureLineId = signatureLine.Id,
-                ProviderId = signatureLine.ProviderId,
-                Comments = "Document was signed by vderyushev",
-                SignTime = DateTime.Now
-            };
 
-            // Create a certificate.
-            CertificateHolder certHolder = CertificateHolder.Create(outputFolder + "morzal.pfx", "aw");
+            document.Save(exportPath);
 
-            // We can sign the signature line programmatically.
-            DigitalSignatureUtil.Sign(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx", outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
+            // // Set signing options. 
+            // SignOptions signOptions = new SignOptions
+            // {
+            //     SignatureLineId = signatureLine.Id,
+            //     ProviderId = signatureLine.ProviderId,
+            //     Comments = "Document was signed by vderyushev",
+            //     SignTime = DateTime.Now
+            // };
 
-            // Create the shape of the signature line.
-            doc = new Document(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
-            Shape shape = (Shape)doc.GetChild(NodeType.Shape, 0, true);
-            signatureLine = shape.SignatureLine;
+            // // Create a certificate.
+            // CertificateHolder certHolder = CertificateHolder.Create(outputFolder + "morzal.pfx", "aw");
 
-            // Loading signatures.
-            DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+            // // We can sign the signature line programmatically.
+            // DigitalSignatureUtil.Sign(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx", outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
 
+            // // Create the shape of the signature line.
+            // document = new Document(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+            // Shape shape = (Shape)document.GetChild(NodeType.Shape, 0, true);
+            // signatureLine = shape.SignatureLine;
+
+            // // Loading signatures.
+            // DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
+
+            return new FileOutput() { FileName = fileName, Url = exportPath };
         }
     }
 }

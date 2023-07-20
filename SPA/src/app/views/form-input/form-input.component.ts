@@ -98,8 +98,24 @@ export class FormInputComponent implements OnInit {
           }
         })
       }
+      if (this.key == "Picture") {
+        this.wordService.ThemHinhAnh(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
+          }
+        })
+      }
       if (this.key == "Security") {
         this.wordService.baoMat(this.media).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
+          }
+        })
+      }
+      if (this.key == "BaoMatVoiCHUKISO") {
+        this.wordService.BaoMatVoiCHUKISO(this.media).subscribe({
           next: result => {
             console.log('ressult', result);
             this.fileOutput = [{ ...result }];

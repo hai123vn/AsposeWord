@@ -28,16 +28,19 @@ export class AsposeWordService {
     }
 
 
-    ThemHinhAnh() {
-        return this.http.get(`${this.baseApi}/ThemHinhAnh`);
+    ThemHinhAnh(model: UploadFile) {
+        let formData = this.functions.toFormData(model);
+        return this.http.post<FileOutput>(`${this.baseApi}/ThemHinhAnh`, formData);
     }
 
-    TrichXuatHinhAnh() {
-        return this.http.get(`${this.baseApi}/TrichXuatHinhAnh`);
+    TrichXuatHinhAnh(model: UploadFile) {
+        let formData = this.functions.toFormData(model);
+        return this.http.post<FileOutput>(`${this.baseApi}/TrichXuatHinhAnh`, formData);
     }
 
-    ChenVaThaoTacBieuDo() {
-        return this.http.get(`${this.baseApi}/ChenVaThaoTacBieuDo`);
+    ChenVaThaoTacBieuDo(model: UploadFile) {
+        let formData = this.functions.toFormData(model);
+        return this.http.post<FileOutput>(`${this.baseApi}/ChenVaThaoTacBieuDo`, formData);
     }
 
     baoMat(model: UploadFile) {
@@ -45,7 +48,8 @@ export class AsposeWordService {
         return this.http.post<FileOutput>(`${this.baseApi}/BaoMat`, formData);
     }
 
-    BaoMatVoiCHUKISO() {
-        return this.http.get(`${this.baseApi}/BaoMatVoiCHUKISO`);
+    BaoMatVoiCHUKISO(model: UploadFile) {
+        let formData = this.functions.toFormData(model);
+        return this.http.post<FileOutput>(`${this.baseApi}/BaoMatVoiCHUKISO`, formData);
     }
 }

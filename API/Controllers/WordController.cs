@@ -51,28 +51,28 @@ namespace API.Controllers
             // return File(filePaths, mimeType, file.FileName);
         }
 
-        [HttpGet("TimKiemVaThayThe")]
+        [HttpPost("TimKiemVaThayThe")]
         public async Task<IActionResult> TimKiemVaThayThe([FromForm] UploadFile model)
         {
             var result = _evi.TimKiemVaThayThe();
             return Ok(result);
         }
 
-        [HttpGet("ThemHinhAnh")]
+        [HttpPost("ThemHinhAnh")]
         public async Task<IActionResult> ThemHinhAnh([FromForm] UploadFile model)
         {
-            var result = _evi.ThemHinhAnh();
+            var result = await _evi.ThemHinhAnh(model);
             return Ok(result);
         }
 
-        [HttpGet("TrichXuatHinhAnh")]
+        [HttpPost("TrichXuatHinhAnh")]
         public async Task<IActionResult> TrichXuatHinhAnh([FromForm] UploadFile model)
         {
             var result = _evi.TrichXuatHinhAnh();
             return Ok(result);
         }
 
-        [HttpGet("ChenVaThaoTacBieuDo")]
+        [HttpPost("ChenVaThaoTacBieuDo")]
         public async Task<IActionResult> ChenVaThaoTacBieuDo([FromForm] UploadFile model)
         {
             var result = _evi.ChenVaThaoTacBieuDo();
@@ -86,10 +86,10 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("BaoMatVoiCHUKISO")]
+        [HttpPost("BaoMatVoiCHUKISO")]
         public async Task<IActionResult> BaoMatVoiCHUKISO([FromForm] UploadFile model)
         {
-            var result =  _evi.BaoMatVoiCHUKISO();
+            var result =  await _evi.BaoMatVoiCHUKISO(model);
             return Ok(result);
         }
     }
