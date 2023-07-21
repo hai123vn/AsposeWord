@@ -1,11 +1,12 @@
 /* Box Upload */
 .box-upload {
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  // background: #f5f6f5;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   padding: 15px;
-  border-radius: 20px;
+  border-radius: 5px;
   outline: none;
   border: none;
-  background-color: #ced4da;
+  background-color: #f5f6f5;
 
   .text-upload {
     width: 100%;
@@ -163,15 +164,19 @@
 //------
 ul {
   list-style: none;
+  margin: 0;padding: 0;
 
   li {
-    padding: 10px;
-    margin: 10px;
+    // padding: 10px;
+    // margin: 10px;
+  
 
     .file-name {
-      font-size: 20px !important;
+      font-size: 16px !important;
       font-weight: 500 !important;
       color: #6c757d !important;
+      display: block;
+      word-break: break-word;
 
     }
 

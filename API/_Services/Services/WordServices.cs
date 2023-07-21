@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using API._Services.Interfaces;
 using API.Dtos;
 using API.Helpers.Utilities;
 using Aspose.Words;
-using Aspose.Words.DigitalSignatures;
 using Aspose.Words.Drawing;
 using Aspose.Words.Drawing.Charts;
 using Aspose.Words.Replacing;
@@ -153,15 +149,16 @@ namespace API._Services.Services
             // Xây dựng Document
 
             builder.InsertImage(
-                outputFolder + "image.jpg", // Tên hình ảnh
+                outputFolder + "image.jpg" // Tên hình ảnh
 
-                RelativeHorizontalPosition.Margin, // cách chiều dọc
-                100,
-                RelativeVerticalPosition.Margin,// cách chiều ngang
-                100,
-                200, // Chiều dài hình ảnh : Width
-                100, // chiều cao hình ảnh : Height
-                WrapType.Square);
+                // RelativeHorizontalPosition.Margin, // cách chiều dọc
+                // 100,
+                // RelativeVerticalPosition.Margin,// cách chiều ngang
+                // 100,
+                // 200, // Chiều dài hình ảnh : Width
+                // 100, // chiều cao hình ảnh : Height
+                // WrapType.Square
+                );
 
             string extention = Path.GetExtension(model.File.FileName);
             string fileName = $"{Path.GetFileNameWithoutExtension(model.File.FileName)}_HasPicture{extention}";
@@ -169,7 +166,11 @@ namespace API._Services.Services
             // Nếu file đã tồn tại thì xoá
             if (File.Exists(exportPath))
                 File.Delete(exportPath);
+
             document.Save(exportPath);
+
+            if (File.Exists(dataDir))
+                File.Delete(dataDir);
 
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
@@ -204,6 +205,9 @@ namespace API._Services.Services
                     });
                 }
             }
+
+            if (File.Exists(dataDir))
+                File.Delete(dataDir);
 
             return result;
         }
@@ -321,6 +325,9 @@ namespace API._Services.Services
 
             document.Save(exportPath, SaveFormat.Docx);
 
+            if (File.Exists(dataDir))
+                File.Delete(dataDir);
+
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
@@ -366,6 +373,9 @@ namespace API._Services.Services
 
             document.Save(exportPath, SaveFormat.Docx);
 
+            if (File.Exists(dataDir))
+                File.Delete(dataDir);
+
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
 
@@ -405,29 +415,8 @@ namespace API._Services.Services
 
             document.Save(exportPath);
 
-            // // Set signing options. 
-            // SignOptions signOptions = new SignOptions
-            // {
-            //     SignatureLineId = signatureLine.Id,
-            //     ProviderId = signatureLine.ProviderId,
-            //     Comments = "Document was signed by vderyushev",
-            //     SignTime = DateTime.Now
-            // };
-
-            // // Create a certificate.
-            // CertificateHolder certHolder = CertificateHolder.Create(outputFolder + "morzal.pfx", "aw");
-
-            // // We can sign the signature line programmatically.
-            // DigitalSignatureUtil.Sign(outputFolder + "DocumentBuilder.SignatureLineProviderId.docx", outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx", certHolder, signOptions);
-
-            // // Create the shape of the signature line.
-            // document = new Document(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
-            // Shape shape = (Shape)document.GetChild(NodeType.Shape, 0, true);
-            // signatureLine = shape.SignatureLine;
-
-            // // Loading signatures.
-            // DigitalSignatureCollection signatures = DigitalSignatureUtil.LoadSignatures(outputFolder + "DocumentBuilder.SignatureLineProviderId.Signed.docx");
-
+            if (File.Exists(dataDir))
+                File.Delete(dataDir);
             return new FileOutput() { FileName = fileName, Url = exportPath };
         }
     }

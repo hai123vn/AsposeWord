@@ -56,11 +56,11 @@
             <ul>
                 <ng-container *ngIf="fileOutput.length > 0">
                     <li *ngFor="let file of fileOutput" class="border-bottom">
-                        <span class="text-muted file-name">
+                        <div class="text-muted file-name">
                             {{file.fileName}}
-                        </span>
+                        </div>
 
-                        <button class="btn btn-sm btn-success float-end" (click)="downloadFile(file)">
+                        <button class="btn btn-sm btn-success mt-2 float-end" (click)="downloadFile(file)">
                             <i class="fa fa-download"></i>
                             Download
                         </button>

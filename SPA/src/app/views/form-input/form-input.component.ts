@@ -69,7 +69,7 @@ export class FormInputComponent implements OnInit {
 
       reader.readAsDataURL(event.target.files[0]); // read file as data url
       reader.onload = (e) => {
-        this.filename = event.target.files[0].name;
+        this.filename = this.returnFileName( event.target.files[0].name);
       };
     }
   }
@@ -125,6 +125,13 @@ export class FormInputComponent implements OnInit {
         })
       }
     }
+  }
+
+  returnFileName(fileName: string): string {
+    let maxLength = 35;
+    let file = fileName.split(/\.(?=[^\.]+$)/);
+    let arr = file[0].split('');
+    return arr.length > maxLength ? `${arr.filter((x, i) => i <= maxLength).join('')}... .${file[1]}` : fileName;
   }
 
   downloadFile(file: FileOutput) {
