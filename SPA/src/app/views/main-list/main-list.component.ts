@@ -20,6 +20,11 @@ export class MainListComponent {
       desc: 'Tìm kiếm và thay thế các từ khoá trong word và trả ra 1 file mới'
     },
     {
+      key: 'AddText',
+      title: 'Chèn Văn Bản',
+      desc: 'Chèn từ vào một văn bản đã có sẵn'
+    },
+    {
       key: 'Word',
       title: 'Văn bản',
       desc: 'Tạo mới vẵn bản trống '
@@ -41,12 +46,11 @@ export class MainListComponent {
     }
   ]
 
-  constructor(private router: Router){
+  constructor(private router: Router) {
 
   }
 
-  onRedirect(key: string)
-  {
+  onRedirect(key: string) {
     this.router.navigate([`/upload/${key}`]);
   }
 }

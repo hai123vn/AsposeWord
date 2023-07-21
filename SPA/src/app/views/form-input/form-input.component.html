@@ -47,6 +47,20 @@
         </div>
 
 
+        <div *ngIf="key == 'AddText'" class="mt-3">
+          <div class="input-group mb-2">
+            <div class="input-group-prepend">
+              <div class="input-group-text">Nội dung thêm</div>
+            </div>
+            <angular-editor [placeholder]="'Enter text here...'"
+              [(ngModel)]="textAdd" [config]="editorConfig"></angular-editor>
+            <!-- <input type="text" class="form-control" name="password"
+              [(ngModel)]="addText.textAdd"> -->
+          </div>
+
+        </div>
+
+
         <div *ngIf="key == 'Security'" class="mt-3">
 
           <div class="row">

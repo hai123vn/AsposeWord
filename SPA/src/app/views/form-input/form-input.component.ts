@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FileOutput, NDWord, UploadFile } from 'src/app/_core/models/upload-file';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { FileOutput, NDWord, TextAdd, UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
 import { FunctionUtility } from 'src/app/_core/utilities';
 
@@ -10,6 +11,56 @@ import { FunctionUtility } from 'src/app/_core/utilities';
   styleUrls: ['./form-input.component.scss']
 })
 export class FormInputComponent implements OnInit {
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: 'auto',
+    minHeight: '0',
+    maxHeight: 'auto',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    fonts: [
+      { class: 'arial', name: 'Arial' },
+      { class: 'times-new-roman', name: 'Times New Roman' },
+      { class: 'calibri', name: 'Calibri' },
+      { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+    ],
+    customClasses: [
+      {
+        name: 'quote',
+        class: 'quote',
+      },
+      {
+        name: 'redText',
+        class: 'redText'
+      },
+      {
+        name: 'titleText',
+        class: 'titleText',
+        tag: 'h1',
+      },
+    ],
+    uploadUrl: 'v1/image',
+    // upload: (file: File) => {
+
+    // },
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['bold', 'italic'],
+      ['fontSize']
+    ]
+  };
+
   filename = 'Vui lòng chọn file để upload';
   media: UploadFile = <UploadFile>{
     file: null,
@@ -21,6 +72,10 @@ export class FormInputComponent implements OnInit {
     noiDungCanTim: '',
     noiDungThayThe: ''
   }
+  textAdd: string = ''
+  // addText: TextAdd = <TextAdd>{
+  //   textAdd: ''
+  // }
 
   //#region Transfer
   fileTypes: string[] = [
@@ -116,6 +171,16 @@ export class FormInputComponent implements OnInit {
           }
         })
       }
+      if (this.key == "AddText") {
+        console.log(this.textAdd);
+        return
+        this.wordService.ChenVanBan(this.media, this.textAdd).subscribe({
+          next: result => {
+            console.log('ressult', result);
+            this.fileOutput = [{ ...result }];
+          }
+        })
+      }
     }
   }
 
@@ -131,4 +196,6 @@ export class FormInputComponent implements OnInit {
   onChooseFileTypeTransfer(type: string) {
     this.media.fileType = type;
   }
+
+
 }

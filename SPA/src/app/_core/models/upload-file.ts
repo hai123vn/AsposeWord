@@ -13,3 +13,7 @@ export interface NDWord {
   noiDungCanTim: string;
   noiDungThayThe: string;
 }
+
+export interface TextAdd {
+  textAdd: string;
+}

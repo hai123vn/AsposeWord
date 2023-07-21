@@ -61,10 +61,10 @@ namespace API.Controllers
         }
 
         [HttpPost("ChenVanBan")]
-        public async Task<IActionResult> ChenVanBan(IFormFile file)
+        public async Task<IActionResult> ChenVanBan(IFormFile file, string textAdd)
         {
 
-            var result = await _evi.ChenVanBan(file);
+            var result = await _evi.ChenVanBan(file, textAdd);
             return Ok(result);
         }
 

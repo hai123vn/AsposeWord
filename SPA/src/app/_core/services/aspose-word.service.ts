@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { FunctionUtility } from '../utilities';
-import { FileOutput, NDWord, UploadFile } from '../models/upload-file';
+import { FileOutput, NDWord, TextAdd, UploadFile } from '../models/upload-file';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -29,6 +29,10 @@ export class AsposeWordService {
     return this.http.post<FileOutput>(`${this.baseApi}/TimKiemVaThayThe`, formData, { params });
   }
 
+  ChenVanBan(model: UploadFile, textAdd: string) {
+    let formData = this.functions.toFormData(model);
+    return this.http.post<FileOutput>(`${this.baseApi}/ChenVanBan`, formData, { params: { textAdd } });
+  }
 
   ThemHinhAnh() {
     return this.http.get(`${this.baseApi}/ThemHinhAnh`);
