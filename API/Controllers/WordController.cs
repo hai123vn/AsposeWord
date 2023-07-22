@@ -61,10 +61,9 @@ namespace API.Controllers
         }
 
         [HttpPost("ChenVanBan")]
-        public async Task<IActionResult> ChenVanBan(IFormFile file, string textAdd)
+        public async Task<IActionResult> ChenVanBan([FromForm] UploadFile file)
         {
-
-            var result = await _evi.ChenVanBan(file, textAdd);
+            var result = await _evi.ChenVanBan(file);
             return Ok(result);
         }
 

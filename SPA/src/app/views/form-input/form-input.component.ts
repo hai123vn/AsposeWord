@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
-import { FileOutput, NDWord, TextAdd, UploadFile } from 'src/app/_core/models/upload-file';
+import { AngularEditorComponent, AngularEditorConfig } from '@kolkov/angular-editor';
+import { FileOutput, NDWord, UploadFile } from 'src/app/_core/models/upload-file';
 import { AsposeWordService } from 'src/app/_core/services/aspose-word.service';
 import { FunctionUtility } from 'src/app/_core/utilities';
 
@@ -10,54 +10,36 @@ import { FunctionUtility } from 'src/app/_core/utilities';
   templateUrl: './form-input.component.html',
   styleUrls: ['./form-input.component.scss']
 })
-export class FormInputComponent implements OnInit {
 
-  editorConfig: AngularEditorConfig = {
+export class FormInputComponent implements OnInit {
+  @ViewChild('editor') editor: AngularEditorComponent;
+
+  config: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
-    height: 'auto',
-    minHeight: '0',
-    maxHeight: 'auto',
-    width: 'auto',
-    minWidth: '0',
-    translate: 'yes',
-    enableToolbar: true,
-    showToolbar: true,
+    height: '15rem',
+    minHeight: '5rem',
     placeholder: 'Enter text here...',
-    defaultParagraphSeparator: '',
-    defaultFontName: '',
-    defaultFontSize: '',
-    fonts: [
-      { class: 'arial', name: 'Arial' },
-      { class: 'times-new-roman', name: 'Times New Roman' },
-      { class: 'calibri', name: 'Calibri' },
-      { class: 'comic-sans-ms', name: 'Comic Sans MS' }
+    translate: 'no',
+    defaultParagraphSeparator: 'p',
+    defaultFontName: 'Arial',
+    toolbarHiddenButtons: [
+      ['bold']
     ],
     customClasses: [
       {
-        name: 'quote',
-        class: 'quote',
+        name: "quote",
+        class: "quote",
       },
       {
         name: 'redText',
         class: 'redText'
       },
       {
-        name: 'titleText',
-        class: 'titleText',
-        tag: 'h1',
+        name: "titleText",
+        class: "titleText",
+        tag: "h1",
       },
-    ],
-    uploadUrl: 'v1/image',
-    // upload: (file: File) => {
-
-    // },
-    uploadWithCredentials: false,
-    sanitize: true,
-    toolbarPosition: 'top',
-    toolbarHiddenButtons: [
-      ['bold', 'italic'],
-      ['fontSize']
     ]
   };
 
@@ -65,7 +47,8 @@ export class FormInputComponent implements OnInit {
   media: UploadFile = <UploadFile>{
     file: null,
     fileType: 'PDF',
-    password: ''
+    password: '',
+    textAdd: ''
   }
 
   ndWord: NDWord = <NDWord>{
@@ -172,12 +155,13 @@ export class FormInputComponent implements OnInit {
         })
       }
       if (this.key == "AddText") {
-        console.log(this.textAdd);
-        return
-        this.wordService.ChenVanBan(this.media, this.textAdd).subscribe({
+        // console.log(this.textAdd);
+        const htmlCode = this.editor.textArea.nativeElement.innerHTML;
+        this.media.textAdd = htmlCode;
+        console.log("TEST", htmlCode);
+        this.wordService.ChenVanBan(this.media).subscribe({
           next: result => {
-            console.log('ressult', result);
-            this.fileOutput = [{ ...result }];
+            this.fileOutput = result;
           }
         })
       }

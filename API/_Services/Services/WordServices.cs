@@ -133,40 +133,33 @@ namespace API._Services.Services
         }
 
 
-        public async Task<List<FileOutput>> ChenVanBan(IFormFile file, string textAdd)
+        public async Task<List<FileOutput>> ChenVanBan(UploadFile file)
         {
             var fileName = new List<FileOutput>();
-            string newFileName = await UploadFileToInput(file);
+            string newFileName = await UploadFileToInput(file.File);
             string dataDir = Path.Combine(inputFolder, newFileName);
 
-            // Đọc nội dung ban đầu từ tập tin
-            if (File.Exists(dataDir))
+
+            // Khởi tạo tài liệu (document).
+            Document doc = new Document();
+            DocumentBuilder builder = new DocumentBuilder(doc);
+            builder.InsertHtml(file.textAdd, true);
+            var outputFileName = file.File.FileName;
+            if (File.Exists(outputFileName))
+                File.Delete(outputFileName);
+            var outputFilePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/", outputFileName);
+
+            // Nếu file đã tồn tại thì xoá
+            if (File.Exists(outputFilePath))
+                File.Delete(outputFilePath);
+
+            doc.Save(outputFilePath, SaveFormat.Docx);
+            fileName.Add(new FileOutput()
             {
-                string originalContent = File.ReadAllText(dataDir);
+                FileName = outputFileName,
+                Url = outputFilePath
+            });
 
-                // Khởi tạo tài liệu (document).
-                Document doc = new Document();
-                DocumentBuilder builder = new DocumentBuilder(doc);
-                builder.InsertHtml(textAdd, true);
-
-                // Ghi lại nội dung ban đầu vào tài liệu
-                builder.Write(originalContent);
-
-                var outputFileName = file.FileName;
-                if (File.Exists(outputFileName))
-                    File.Delete(outputFileName);
-                var outputFilePath = Path.Combine(_environment.ContentRootPath, @"wwwroot/output/", outputFileName);
-                doc.Save(outputFilePath, SaveFormat.Docx);
-                fileName.Add(new FileOutput()
-                {
-                    FileName = outputFileName,
-                    Url = outputFilePath
-                });
-            }
-            else
-            {
-                throw new FileNotFoundException("File not found: " + dataDir);
-            }
             return fileName;
         }
 

@@ -50,14 +50,14 @@
         <div *ngIf="key == 'AddText'" class="mt-3">
           <div class="input-group mb-2">
             <div class="input-group-prepend">
-              <div class="input-group-text">Nội dung thêm</div>
+              <div class="input-group-prepend"
+                style="text-align: center; font-weight: bold;color: black; ">NỘI
+                DUNG
+                THÊM</div>
+              <angular-editor #editor [(ngModel)]="media.textAdd"
+                [config]="config"></angular-editor>
             </div>
-            <angular-editor [placeholder]="'Enter text here...'"
-              [(ngModel)]="textAdd" [config]="editorConfig"></angular-editor>
-            <!-- <input type="text" class="form-control" name="password"
-              [(ngModel)]="addText.textAdd"> -->
           </div>
-
         </div>
 
 

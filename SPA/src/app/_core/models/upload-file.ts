@@ -2,6 +2,7 @@ export interface UploadFile {
   file: File,
   fileType: string;
   password?: string;
+  textAdd: string;
 }
 
 export interface FileOutput {
@@ -14,6 +15,3 @@ export interface NDWord {
   noiDungThayThe: string;
 }
 
-export interface TextAdd {
-  textAdd: string;
-}
